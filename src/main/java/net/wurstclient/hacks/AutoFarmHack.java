@@ -64,7 +64,7 @@ public final class AutoFarmHack extends Hack
 	private final CheckboxSetting preferFortune =
 		new CheckboxSetting("Prefer Fortune",
 			"description.wurst.setting.autofarm.prefer_fortune", false);
-
+	
 	private final FaceTargetSetting faceTarget =
 		FaceTargetSetting.withoutPacketSpam(this, FaceTarget.SERVER);
 	
@@ -367,9 +367,8 @@ public final class AutoFarmHack extends Hack
 			return;
 		
 		Inventory inventory = MC.player.getInventory();
-		int heldLevel = EnchantmentHelper
-			.getItemEnchantmentLevel(fortune.get(),
-				MC.player.getMainHandItem());
+		int heldLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune.get(),
+			MC.player.getMainHandItem());
 		
 		int bestSlot = -1;
 		int bestLevel = heldLevel;
@@ -379,8 +378,8 @@ public final class AutoFarmHack extends Hack
 				continue;
 			
 			ItemStack stack = inventory.getItem(slot);
-			int level = EnchantmentHelper
-				.getItemEnchantmentLevel(fortune.get(), stack);
+			int level =
+				EnchantmentHelper.getItemEnchantmentLevel(fortune.get(), stack);
 			if(level > bestLevel)
 			{
 				bestLevel = level;
