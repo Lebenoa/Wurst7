@@ -80,6 +80,7 @@
   "description.wurst.setting.autofarm.face_target": "How AutoFarm should face the crops when planting and harvesting.",
   "description.wurst.setting.autofarm.attack_swing": "How AutoFarm should swing your hand when harvesting by mining.",
   "description.wurst.setting.autofarm.interact_swing": "How AutoFarm should swing your hand when planting and harvesting by interacting.",
+  "description.wurst.setting.autofarm.prefer_fortune": "When harvesting crops that benefit from Fortune (e.g. potatoes), automatically switches to the tool with the highest Fortune enchantment.\n\nIf nothing in the hotbar has more Fortune than the currently held item, nothing is switched.",
   "description.wurst.hack.autofish": "Automatically catches fish using your best fishing rod. If it finds a better rod while fishing, it will automatically switch to it.",
   "description.wurst.hack.automine": "Automatically mines any block that you look at.",
   "description.wurst.hack.autopotion": "Automatically throws splash potions of instant health when your health is low.",
