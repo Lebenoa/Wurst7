@@ -18,6 +18,17 @@
 
 - **Donations/Perks:** [https://ko-fi.com/wurst](https://go.wimods.net/from/github.com/Wurst-Imperium/Wurst7?to=https://ko-fi.com/wurst)
 
+## Differences from upstream
+
+This fork adds a **"Prefer Fortune"** setting to AutoFarm. When enabled, AutoFarm equips the tool with the highest Fortune enchantment from the hotbar before harvesting by mining — but only if it beats the Fortune level of the currently held item. Replanting is unaffected.
+
+Why not in AutoTool: upstream decided in
+[#822](https://github.com/Wurst-Imperium/Wurst7/issues/822) that tool selection belongs in AutoTool, not AutoFarm:
+
+> Update: I've changed my mind about this and am no longer in favor of adding Fortune support directly to AutoFarm. IMO, tool selection should be handled by AutoTool instead, which can then either be enabled alongside AutoFarm or used separately.
+
+As of 2026-11-05 no branch of upstream (master, 26.2, 26.3, 26.4) implements Fortune preference in AutoTool, so this fork carries the setting in AutoFarm directly. Background: [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822), [#371](https://github.com/Wurst-Imperium/Wurst7/issues/371), [#846](https://github.com/Wurst-Imperium/Wurst7/pull/846).
+
 ## Installation
 
 Wurst 7 can be installed just like any other Fabric mod. Here are the basic installation steps:
