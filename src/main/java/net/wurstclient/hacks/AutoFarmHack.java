@@ -16,10 +16,18 @@ import java.util.stream.Stream;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
@@ -51,6 +59,10 @@ public final class AutoFarmHack extends Hack
 		new CheckboxSetting("Check line of sight",
 			"description.wurst.setting.autofarm.check_line_of_sight", false);
 	
+	private final CheckboxSetting preferFortune =
+		new CheckboxSetting("Prefer Fortune",
+			"description.wurst.setting.autofarm.prefer_fortune", false);
+
 	private final FaceTargetSetting faceTarget =
 		FaceTargetSetting.withoutPacketSpam(this, FaceTarget.SERVER);
 	
@@ -76,6 +88,7 @@ public final class AutoFarmHack extends Hack
 		setCategory(Category.BLOCKS);
 		addSetting(range);
 		addSetting(checkLOS);
+		addSetting(preferFortune);
 		addSetting(faceTarget);
 		addSetting(swingHand);
 		renderer.getSettings().forEach(this::addSetting);
@@ -283,6 +296,9 @@ public final class AutoFarmHack extends Hack
 	
 	private void harvestByMining(List<BlockPos> blocksToMine)
 	{
+		if(blocksToMine.isEmpty())
+			return;
+		
 		double rangeSq = range.getValueSq();
 		Stream<BlockBreakingParams> stream = blocksToMine.stream()
 			.map(BlockBreaker::getBlockBreakingParams).filter(Objects::nonNull)
@@ -292,6 +308,9 @@ public final class AutoFarmHack extends Hack
 			stream = stream.filter(BlockBreakingParams::lineOfSight);
 		
 		stream = stream.sorted(BlockBreaker.comparingParams());
+		
+		if(preferFortune.isChecked())
+			equipFortuneTool();
 		
 		// Break all blocks in creative mode
 		if(MC.player.getAbilities().instabuild
@@ -323,6 +342,48 @@ public final class AutoFarmHack extends Hack
 		}
 		
 		overlay.updateProgress();
+	}
+	
+	/**
+	 * Equips the tool with the highest Fortune enchantment from the hotbar,
+	 * but only if it has more Fortune than the currently held item.
+	 */
+	private void equipFortuneTool()
+	{
+		if(MC.level == null)
+			return;
+		
+		Registry<Enchantment> registry =
+			MC.level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+		Optional<Holder.Reference<Enchantment>> fortune =
+			registry.get(Enchantments.FORTUNE);
+		if(fortune.isEmpty())
+			return;
+		
+		Inventory inventory = MC.player.getInventory();
+		int heldLevel = EnchantmentHelper
+			.getItemEnchantmentLevel(fortune.get(),
+				MC.player.getMainHandItem());
+		
+		int bestSlot = -1;
+		int bestLevel = heldLevel;
+		for(int slot = 0; slot < 9; slot++)
+		{
+			if(slot == inventory.getSelectedSlot())
+				continue;
+			
+			ItemStack stack = inventory.getItem(slot);
+			int level = EnchantmentHelper
+				.getItemEnchantmentLevel(fortune.get(), stack);
+			if(level > bestLevel)
+			{
+				bestLevel = level;
+				bestSlot = slot;
+			}
+		}
+		
+		if(bestSlot != -1)
+			inventory.setSelectedSlot(bestSlot);
 	}
 	
 	private boolean breakOneBlock(BlockBreakingParams params)
