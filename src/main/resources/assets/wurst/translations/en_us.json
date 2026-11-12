@@ -76,6 +76,7 @@
   "description.wurst.setting.autoeat.allow_poison": "Poisonous food applies damage over time.\nNot recommended.",
   "description.wurst.setting.autoeat.allow_chorus": "Eating chorus fruit teleports you to a random location.\nNot recommended.",
   "description.wurst.hack.autofarm": "Harvests and replants crops automatically.",
+  "description.wurst.hack.plantaura": "Automatically plants seeds you're holding on empty farmland. Never switches items.",
   "description.wurst.setting.autofarm.check_line_of_sight": "Ensures that you don't reach through blocks when planting and harvesting.",
   "description.wurst.setting.autofarm.face_target": "How AutoFarm should face the crops when planting and harvesting.",
   "description.wurst.setting.autofarm.attack_swing": "How AutoFarm should swing your hand when harvesting by mining.",
