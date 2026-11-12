@@ -76,6 +76,7 @@
   "description.wurst.setting.autoeat.allow_chorus": "Eating chorus fruit teleports you to a random location.\nNot recommended.",
   "description.wurst.hack.autofarm": "Harvests and replants crops automatically.",
   "description.wurst.hack.plantaura": "Automatically plants seeds you're holding on empty farmland. Never switches items.",
+  "description.wurst.setting.plantaura.check_line_of_sight": "Ensures that you don't reach through blocks when planting.",
   "description.wurst.setting.autofarm.check_line_of_sight": "Ensures that you don't reach through blocks when planting and harvesting.",
   "description.wurst.setting.autofarm.face_target": "How AutoFarm should face the crops when planting and harvesting.",
   "description.wurst.setting.autofarm.prefer_fortune": "When harvesting crops that benefit from Fortune (e.g. potatoes), automatically switches to the tool with the highest Fortune enchantment.\n\nIf nothing in the hotbar has more Fortune than the currently held item, nothing is switched.",

@@ -16,10 +16,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import net.wurstclient.Category;
 import net.wurstclient.SearchTags;
 import net.wurstclient.events.HandleInputListener;
 import net.wurstclient.hack.Hack;
+import net.wurstclient.settings.CheckboxSetting;
+import net.wurstclient.settings.FaceTargetSetting;
+import net.wurstclient.settings.FaceTargetSetting.FaceTarget;
+import net.wurstclient.settings.SliderSetting;
+import net.wurstclient.settings.SliderSetting.ValueDisplay;
+import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.BlockPlacer;
 import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 import net.wurstclient.util.BlockUtils;
@@ -32,10 +40,27 @@ public final class PlantAuraHack extends Hack implements HandleInputListener
 		Items.BEETROOT_SEEDS, Items.PUMPKIN_SEEDS, Items.MELON_SEEDS,
 		Items.TORCHFLOWER_SEEDS, Items.PITCHER_POD, Items.CARROT, Items.POTATO);
 	
+	private final SliderSetting range =
+		new SliderSetting("Range", 5, 1, 6, 0.05, ValueDisplay.DECIMAL);
+	
+	private final CheckboxSetting checkLOS =
+		new CheckboxSetting("Check line of sight",
+			"description.wurst.setting.plantaura.check_line_of_sight", false);
+	
+	private final FaceTargetSetting faceTarget =
+		FaceTargetSetting.withoutPacketSpam(this, FaceTarget.SERVER);
+	
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.SERVER);
+	
 	public PlantAuraHack()
 	{
 		super("PlantAura");
 		setCategory(Category.BLOCKS);
+		addSetting(range);
+		addSetting(checkLOS);
+		addSetting(faceTarget);
+		addSetting(swingHand);
 	}
 	
 	@Override
@@ -57,43 +82,55 @@ public final class PlantAuraHack extends Hack implements HandleInputListener
 			|| MC.player.isHandsBusy())
 			return;
 		
-		InteractionHand hand = getSeedHand();
-		if(hand == null)
+		Item heldSeed = getHeldSeed();
+		if(heldSeed == null)
 			return;
 		
-		BlockPos eyesBlock = BlockPos.containing(MC.player.getEyePosition());
-		int blockRange = 5;
-		double rangeSq = blockRange * blockRange;
-		List<BlockPos> farmland =
-			BlockUtils.getAllInBoxStream(eyesBlock, blockRange)
-				.filter(pos -> pos
-					.distToCenterSqr(MC.player.getEyePosition()) <= rangeSq)
-				.filter(pos -> BlockUtils.getBlock(pos) == Blocks.FARMLAND)
-				.filter(pos -> BlockUtils.getState(pos.above()).isAir())
-				.map(BlockPos::above)
-				.sorted(Comparator.comparingDouble(
-					pos -> pos.distToCenterSqr(MC.player.getEyePosition())))
-				.toList();
+		InteractionHand hand = MC.player.getMainHandItem().is(heldSeed)
+			? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
 		
+		List<BlockPos> farmland = getFarmlandSpots();
 		for(BlockPos pos : farmland)
 		{
 			BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(pos);
-			if(params == null || params.distanceSq() > rangeSq
-				|| params.requiresSneaking() || !params.lineOfSight())
+			if(params == null || params.distanceSq() > range.getValueSq()
+				|| params.requiresSneaking())
+				continue;
+			
+			if(checkLOS.isChecked() && !params.lineOfSight())
 				continue;
 			
 			MC.rightClickDelay = 4;
-			InteractionSimulator.rightClickBlock(params.toHitResult(), hand);
+			faceTarget.face(params.hitVec());
+			InteractionSimulator.rightClickBlock(params.toHitResult(), hand,
+				swingHand.getSelected());
 			return;
 		}
 	}
 	
-	private InteractionHand getSeedHand()
+	private Item getHeldSeed()
 	{
 		if(SEEDS.contains(MC.player.getMainHandItem().getItem()))
-			return InteractionHand.MAIN_HAND;
+			return MC.player.getMainHandItem().getItem();
 		if(SEEDS.contains(MC.player.getOffhandItem().getItem()))
-			return InteractionHand.OFF_HAND;
+			return MC.player.getOffhandItem().getItem();
 		return null;
+	}
+	
+	private List<BlockPos> getFarmlandSpots()
+	{
+		Vec3 eyesVec = MC.player.getEyePosition();
+		BlockPos eyesBlock = BlockPos.containing(eyesVec);
+		double rangeSq = range.getValueSq();
+		int blockRange = range.getValueCeil();
+		
+		return BlockUtils.getAllInBoxStream(eyesBlock, blockRange)
+			.filter(pos -> pos.distToCenterSqr(eyesVec) <= rangeSq)
+			.filter(pos -> BlockUtils.getBlock(pos) == Blocks.FARMLAND)
+			.filter(pos -> BlockUtils.getState(pos.above()).isAir())
+			.map(BlockPos::above)
+			.sorted(
+				Comparator.comparingDouble(pos -> pos.distToCenterSqr(eyesVec)))
+			.toList();
 	}
 }
