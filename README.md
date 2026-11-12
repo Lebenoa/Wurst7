@@ -29,7 +29,7 @@ Why not in AutoTool: upstream decided in
 
 As of 2026-11-05 no branch of upstream (master, 26.2, 26.3, 26.4) implements Fortune preference in AutoTool, so this fork carries the setting in AutoFarm directly. Background: [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822), [#371](https://github.com/Wurst-Imperium/Wurst7/issues/371), [#846](https://github.com/Wurst-Imperium/Wurst7/pull/846).
 
-This fork also extends **PlantAura** with the same settings AutoFarm has: **Range**, **Check line of sight** (off by default, unlike AutoFarm), **Face target** and **Interact swing**. Upstream's PlantAura has none of these — range is hardcoded to 5 and line of sight is always enforced, which blocks planting through open gaps. As with AutoFarm, PlantAura still never switches items; it only plants what you are holding.
+This fork also adds **PlantAura**, a new hack that automatically plants held seeds on empty farmland — AutoFarm's planting mechanics (Range, Check line of sight, Face target, Interact swing settings) extracted into a standalone hack. Line of sight is off by default; AutoFarm enforces it. PlantAura never switches items: it only plants what you are already holding, where AutoFarm falls back to `InventoryUtils.selectItem()` / creative give. Upstream has no equivalent hack.
 
 ## Installation
 
