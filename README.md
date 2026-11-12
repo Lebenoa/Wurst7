@@ -20,7 +20,14 @@
 
 ## Differences from upstream
 
-This fork adds a **"Prefer Fortune"** setting to AutoFarm. When enabled, AutoFarm equips the tool with the highest Fortune enchantment from the hotbar before harvesting by mining — but only if it beats the Fortune level of the currently held item. Replanting is unaffected.
+| Change | Where | Status |
+|---|---|---|
+| **Prefer Fortune** setting for AutoFarm | `AutoFarmHack` | Not in upstream — tracked in [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822) |
+| **PlantAura** hack (plants held seeds on farmland) | `PlantAuraHack` | Fork-original, no upstream equivalent |
+
+### Prefer Fortune (AutoFarm)
+
+When enabled, AutoFarm equips the tool with the highest Fortune enchantment from the hotbar before harvesting by mining — but only if it beats the Fortune level of the currently held item. Replanting is unaffected.
 
 Why not in AutoTool: upstream decided in
 [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822) that tool selection belongs in AutoTool, not AutoFarm:
@@ -29,7 +36,9 @@ Why not in AutoTool: upstream decided in
 
 As of 2026-11-05 no branch of upstream (master, 26.2, 26.3, 26.4) implements Fortune preference in AutoTool, so this fork carries the setting in AutoFarm directly. Background: [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822), [#371](https://github.com/Wurst-Imperium/Wurst7/issues/371), [#846](https://github.com/Wurst-Imperium/Wurst7/pull/846).
 
-This fork also adds **PlantAura**, a new hack that automatically plants held seeds on empty farmland — AutoFarm's planting mechanics (Range, Check line of sight, Face target, Interact swing settings) extracted into a standalone hack. Line of sight is off by default; AutoFarm enforces it. PlantAura never switches items: it only plants what you are already holding, where AutoFarm falls back to `InventoryUtils.selectItem()` / creative give. Upstream has no equivalent hack.
+### PlantAura
+
+Fork-original hack that automatically plants held seeds on empty farmland — AutoFarm's planting mechanics (Range, Check line of sight, Face target, Interact swing settings) extracted into a standalone hack. Line of sight is off by default; AutoFarm enforces it. PlantAura never switches items: it only plants what you are already holding, where AutoFarm falls back to `InventoryUtils.selectItem()` / creative give.
 
 ## Installation
 
