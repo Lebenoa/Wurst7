@@ -24,6 +24,7 @@
 |---|---|---|
 | **Prefer Fortune** setting for AutoFarm | `AutoFarmHack` | Not in upstream — tracked in [#822](https://github.com/Wurst-Imperium/Wurst7/issues/822) |
 | **PlantAura** hack (plants held seeds on farmland) | `PlantAuraHack` | Fork-original, no upstream equivalent |
+| Alt Manager button dodges ModMenu on the title screen | `TitleScreenMixin` | Fixes upstream overlap when ModMenu is installed |
 
 ### Prefer Fortune (AutoFarm)
 
@@ -39,6 +40,10 @@ As of 2026-11-05 no branch of upstream (master, 26.2, 26.3, 26.4) implements For
 ### PlantAura
 
 Fork-original hack that automatically plants held seeds on empty farmland — AutoFarm's planting mechanics (Range, Check line of sight, Face target, Interact swing settings) extracted into a standalone hack. Line of sight is off by default; AutoFarm enforces it. PlantAura never switches items: it only plants what you are already holding, where AutoFarm falls back to `InventoryUtils.selectItem()` / creative give.
+
+### Alt Manager button placement
+
+Upstream places the Alt Manager button at a hardcoded `width / 2 + 2` on the title screen — the same spot ModMenu uses for its own button, so with ModMenu installed the two overlap and ModMenu wins the clicks. This fork anchors the button next to the Realms button and, when another button already occupies that slot, moves Alt Manager to the left of Realms instead (`[Alt Manager] [Realms] [ModMenu]`). Without ModMenu, the layout is unchanged from upstream.
 
 ## Installation
 
