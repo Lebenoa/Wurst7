@@ -60,12 +60,15 @@ public abstract class TitleScreenMixin extends Screen
 		// make Realms button smaller
 		realmsButton.setWidth(98);
 		
-		// add AltManager button
+		// add AltManager button directly to the right of the Realms
+		// button, wherever it currently is (ModMenu may move it)
 		addRenderableWidget(altsButton = Button
 			.builder(Component.literal("Alt Manager"),
 				b -> minecraft.gui.setScreen(new AltManagerScreen(this,
 					WurstClient.INSTANCE.getAltManager())))
-			.bounds(width / 2 + 2, realmsButton.getY(), 98, 20).build());
+			.bounds(realmsButton.getX() + realmsButton.getWidth() + 2,
+				realmsButton.getY(), 98, 20)
+			.build());
 	}
 	
 	@Inject(method = "tick()V", at = @At("RETURN"))
@@ -76,6 +79,7 @@ public abstract class TitleScreenMixin extends Screen
 			
 		// adjust AltManager button if Realms button has been moved
 		// happens when ModMenu is installed
+		altsButton.setX(realmsButton.getX() + realmsButton.getWidth() + 2);
 		altsButton.setY(realmsButton.getY());
 	}
 	
