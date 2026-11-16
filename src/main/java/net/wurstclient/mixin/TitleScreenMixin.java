@@ -60,15 +60,41 @@ public abstract class TitleScreenMixin extends Screen
 		// make Realms button smaller
 		realmsButton.setWidth(98);
 		
-		// add AltManager button directly to the right of the Realms
-		// button, wherever it currently is (ModMenu may move it)
+		// add AltManager button to the left of the Realms button.
+		// ModMenu puts its own button directly to the right of Realms,
+		// so the right side is only safe when that slot is empty
 		addRenderableWidget(altsButton = Button
 			.builder(Component.literal("Alt Manager"),
 				b -> minecraft.gui.setScreen(new AltManagerScreen(this,
 					WurstClient.INSTANCE.getAltManager())))
-			.bounds(realmsButton.getX() + realmsButton.getWidth() + 2,
-				realmsButton.getY(), 98, 20)
-			.build());
+			.bounds(realmsButton.getX(), realmsButton.getY(), 98, 20).build());
+		positionAltsButton();
+	}
+	
+	private void positionAltsButton()
+	{
+		int spacing = 2;
+		
+		// default: directly to the right of the Realms button
+		int x = realmsButton.getX() + realmsButton.getWidth() + spacing;
+		
+		// if another button already occupies that spot (e.g. ModMenu's
+		// button when ModMenu is installed), go to the left of Realms
+		for(AbstractWidget button : Screens.getWidgets(this))
+		{
+			if(button == realmsButton || button == altsButton)
+				continue;
+			
+			if(button.getY() == realmsButton.getY()
+				&& Math.abs(button.getX() - x) < 98 + spacing)
+			{
+				x = realmsButton.getX() - 98 - spacing;
+				break;
+			}
+		}
+		
+		altsButton.setX(x);
+		altsButton.setY(realmsButton.getY());
 	}
 	
 	@Inject(method = "tick()V", at = @At("RETURN"))
@@ -79,8 +105,7 @@ public abstract class TitleScreenMixin extends Screen
 			
 		// adjust AltManager button if Realms button has been moved
 		// happens when ModMenu is installed
-		altsButton.setX(realmsButton.getX() + realmsButton.getWidth() + 2);
-		altsButton.setY(realmsButton.getY());
+		positionAltsButton();
 	}
 	
 	/**
