@@ -45,6 +45,10 @@ Fork-original hack that automatically plants held seeds on empty farmland — Au
 
 Upstream places the Alt Manager button at a hardcoded `width / 2 + 2` on the title screen — the same spot ModMenu uses for its own button, so with ModMenu installed the two overlap and ModMenu wins the clicks. This fork anchors the button next to the Realms button and, when another button already occupies that slot, moves Alt Manager to the left of Realms instead (`[Alt Manager] [Realms] [ModMenu]`). Without ModMenu, the layout is unchanged from upstream.
 
+### Versioning
+
+Fork builds use `<upstream base>+<build date>-MC<MC version>`, e.g. `v7.56.2+20261117-MC26.2`. The upstream base (`7.56.2`) changes only when rebasing onto a new upstream release; the date identifies the fork build; the MC suffix matches the branch (`master` builds MC 26.3 and carries `-MC26.3`).
+
 ## Installation
 
 Wurst 7 can be installed just like any other Fabric mod. Here are the basic installation steps:
